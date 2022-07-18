@@ -1,0 +1,26 @@
+drop database studentdatabase;
+create database studentdatabase;
+use studentdatabase;
+create table student(StudID int, StudName varchar(40));
+desc student;
+alter table student add column deptNo int;
+desc student;
+create table examsec(Dno int, Dname varchar(30), sem int, noofstud int);
+desc examsec;
+insert into examsec(Dno, Dname, sem, noofstud)values(101, 'CSE', 4, 190);
+insert into examsec(Dno, Dname, sem, noofstud)values(102,'ISE',5,180);
+commit;
+select * from examsec;
+alter table student modify column StudID varchar(30);
+desc student;
+/*alter table student add  foreign key (deptNo) references examsec (Dno) on delete cascade; */
+insert into student(StudID, StudName, deptNo)values('1BMCS182','Nithin',101);
+insert into student(StudID, StudName, deptNo)values ('1BMIS120','Priya',102);
+insert into student(StudID, StudName, deptNo)values('1BMCS181','Nitya',101);
+commit;
+select * from student;
+select * from examsec;
+update examsec set Dno=104 where Dname='CSE';
+commit;
+select * from examsec;
+select * from student;
