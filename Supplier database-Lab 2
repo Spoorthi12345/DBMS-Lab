@@ -1,0 +1,37 @@
+ /*  SUPPLIER DATABASE  */
+
+drop database supp;
+create database supp;
+use supp;
+create table Suppliers(sid int primary key, sname varchar(20), city varchar(20));
+desc suppliers;
+insert suppliers value('2002',' tarak',' malleshwaram');
+insert suppliers value('2003',' charan',' NR colony');
+insert suppliers value('2004',' arjun',' Jaynagar');
+insert suppliers value('2005',' varun',' JP nagar');
+insert suppliers value('2006',' aditya',' indranagar');
+select*from suppliers;
+commit;
+create table Parts(pid int primary key, pname varchar(20), color varchar(20));
+insert parts value('2002',' book',' blue');
+insert parts value('2003',' pen',' black');
+insert parts value('2004',' eraser',' pink');
+insert parts value('2005',' pencil',' yellow');
+insert parts value('2006',' marker',' green');
+select*from parts;
+commit;
+create table catalog(sid int, pid int, cost float(5), primary key(sid, pid), foreign key(sid) references suppliers(sid), foreign key(pid) references parts(pid));
+insert catalog value('2002',' 2002',' 20');
+insert catalog value('2003',' 2003',' 10');
+insert catalog value('2004',' 2004',' 30');
+insert catalog value('2005',' 2005',' 50');
+insert catalog value('2006',' 2006','60');
+select*from catalog;
+commit;
+
+/* queries*/
+select distinct p.pname from parts p, catalog c where p.pid = c.pid;
+select s.sname from suppliers s where not exists ((select p.pid from parts p) minus (select c.pid from catalog c where c.cid=s.sid));
+select s.sname from suppliers s where not exists ((select p.pid from parts  where p.color = 'red') minus (select c.pid from catalog c, parts p where c.cid=s.sid and c.pid = p.pid and p.color = 'red'));
+select distinct c.sid from catalog c where c.cost>(select avg (c1.cost) from catalog c1 where c1.pid=c.pid);
+select p.pid, s.sname from parts p, suppliers s, catalog c where c.pid=p.pid and c.sid=s.sid and c.cost=(select max(c1.cost) from catalog c1 where c1.pid = p.pid);
