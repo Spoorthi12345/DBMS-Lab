@@ -1,0 +1,35 @@
+
+                              /*BANKING DATABASE*/
+drop database banking;
+create database banking;
+use banking;
+create table branch(branchname varchar(30), branchcity varchar(30), assests real, primary key(branchname));
+create table bankaccount(accno integer, branchname varchar(30), balance real, primary key(accno), foreign key(branchname) references branch(branchname));
+create table bankcustomer(customername varchar(30), customerstreet varchar(30), customercity varchar(30), primary key(customername));
+create table depositer (customername varchar(30), accno integer, primary key(customername, accno), foreign key(accno) references branch(branchname));
+create table loan(loannumber int, branchname varchar(30), amount real, primary key(loannumber), foreign key(branchname) references branch(branchname));
+
+insert into branch values('SBI_Chamrajpet', 'Bangalore',50000);
+insert into branch values('SBI_ResidencyRoad', 'Bangalore',10000);
+insert into branch values('SBI_ShivajiRoad', 'Bombay',20000);
+insert into branch values('SBI_ParlimentRoad', 'Delhi',10000);
+insert into branch values('SBI_JantarMantar', 'Delhi',20000);
+
+insert into loan values(2, 'SBI_ResidencyRoad', 2000);
+insert into loan values(1, 'SBI_Chamrajpet', 1000);
+insert into loan values(3, 'SBI_ShivajiRoad', 3000);
+insert into loan values(4, 'SBI_ParlimentRoad', 4000);
+insert into loan values(5, 'SBI_JantarMantar', 5000);
+
+select * from loan;
+
+insert into bankaccount values(11, 'SBI_JantarMantar', 2000);
+commit;
+select * from bankaccount;
+commit;
+
+select c.customername from bankcustomer c where exists (select d.customername, count(d.customername) from depositer d, bankaccount ba where d.accno=ba.accno and c.customername=d.customername and ba.branchname ='SBI_ResidencyRoad' group by d.customername having count(d.customername)>=2);
+select bc.customername from bankcustomer bc where not exists (select branchname from branch where branchcity='Delhi' minus (select ba.branchname from depositer d, bankaccount ba where d.accno=ba.accno and bc.customername=d.customername));
+delete from bankaccount where branchname in (select branchname from branch where branchcity='BOMBAY');
+
+
